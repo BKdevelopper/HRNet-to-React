@@ -51,7 +51,9 @@ function CreateEmployee() {
           />
         </header>
         <p>{ListAllData.id}</p>
-        <DataTable data={Employees || ListAllData} />
+        <div className="container_employee_list">
+          <DataTable data={Employees || ListAllData} />
+        </div>
       </main>
     </Suspense>
   )
