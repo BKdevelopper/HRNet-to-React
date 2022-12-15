@@ -9,32 +9,39 @@ import DatePicker from 'react-datepicker'
 import 'react-datepicker/dist/react-datepicker.css'
 function EmployeesList() {
   const [ModalIsVisible, setModalIsVisible] = useState(false)
+  const [ModalError, setModalError] = useState(false)
+
   const [datebirth, setdatebirth] = useState('')
   const [StartDATE, setStartDATE] = useState('')
 
   const closeModal = () => {
     setModalIsVisible(false)
+    setModalError(false)
   }
   const FormComplete = {
-    dateOfBirth: useRef(),
     city: useRef(),
     department: useRef(),
     firstname: useRef(),
     lastname: useRef(),
-    startDate: useRef(),
     state: useRef(),
     street: useRef(),
     zipcode: useRef(),
   }
   const AddEmployeeForm = (e) => {
     const employees = JSON.parse(localStorage.getItem('employees')) || []
-    console.log(employees)
-    const dateStart = `${
-      startDate.getMonth() + 1
-    }/${startDate.getDate()}/${startDate.getFullYear()}`
-    const birthDate = `${
-      datebirth.getMonth() + 1
-    }/${datebirth.getDate()}/${datebirth.getFullYear()}`
+    const form = document.getElementById('form-create-employee')
+    const dateStart =
+      StartDATE !== ''
+        ? `${
+            StartDATE.getMonth() + 1
+          }/${StartDATE.getDate()}/${StartDATE.getFullYear()}`
+        : ''
+    const birthDate =
+      datebirth !== ''
+        ? `${
+            datebirth.getMonth() + 1
+          }/${datebirth.getDate()}/${datebirth.getFullYear()}`
+        : ''
     const newEmployee = {
       firstname: FormComplete.firstname.current.value,
       lastname: FormComplete.lastname.current.value,
@@ -46,11 +53,26 @@ function EmployeesList() {
       state: FormComplete.state.current.value,
       zipcode: FormComplete.zipcode.current.value,
     }
+
     e.preventDefault()
-    console.log(newEmployee)
-    employees.push(newEmployee)
-    localStorage.setItem('employees', JSON.stringify(employees))
-    //window.location.reload()
+    if (
+      newEmployee.firstname !== '' &&
+      newEmployee.lastname !== '' &&
+      newEmployee.startDate !== '' &&
+      newEmployee.department !== '' &&
+      newEmployee.dateOfBirth !== '' &&
+      newEmployee.street !== '' &&
+      newEmployee.city !== '' &&
+      newEmployee.state !== '' &&
+      newEmployee.zipcode !== ''
+    ) {
+      employees.push(newEmployee)
+      localStorage.setItem('employees', JSON.stringify(employees))
+      setModalIsVisible(true)
+      form.reset()
+    } else {
+      setModalError(true)
+    }
   }
   const handledatebirth = (date) => {
     setdatebirth(date)
@@ -65,7 +87,7 @@ function EmployeesList() {
       </div>
       <div className="container">
         <h2>Create Employee</h2>
-        <form onSubmit={AddEmployeeForm} id="create-employee">
+        <form onSubmit={AddEmployeeForm} id="form-create-employee">
           <label htmlFor="first-name">First Name</label>
           <input type="text" id="first-name" ref={FormComplete.firstname} />
           <label htmlFor="last-name">Last Name</label>
@@ -134,11 +156,7 @@ function EmployeesList() {
             })}
           </select>
 
-          <button
-            onClick={() => setModalIsVisible(true)}
-            className="form__footer__btn"
-            type="submit"
-          >
+          <button className="form__footer__btn" type="submit">
             Save
           </button>
         </form>
@@ -146,6 +164,11 @@ function EmployeesList() {
           Employees
         </Link>
       </div>
+      <ModalComponent
+        text="Complete all fields of the form"
+        closeButton={closeModal}
+        visible={ModalError}
+      />
       <ModalComponent
         text="Employee Created!"
         closeButton={closeModal}

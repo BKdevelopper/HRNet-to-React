@@ -42,7 +42,10 @@ function CreateEmployee() {
     <Suspense fallback={Loader()}>
       <main className="container_employee">
         <header className="container_employee_header">
-          <h1 className="container_employee_title">Dashboard</h1>
+          <Link to="/" className="container_employee_title">
+            Dashboard
+          </Link>
+
           <input
             type="search"
             placeholder="Search employees..."
