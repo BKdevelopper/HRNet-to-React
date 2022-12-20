@@ -7,7 +7,11 @@ import { useRef } from 'react'
 import ModalComponent from 'modal-component-library-p14'
 import DatePicker from 'react-datepicker'
 import 'react-datepicker/dist/react-datepicker.css'
+import { useDispatch } from 'react-redux'
+import { SetEmployee } from '../redux/action/actionTypes'
 function EmployeesList() {
+  const dispatch = useDispatch()
+
   const [ModalIsVisible, setModalIsVisible] = useState(false)
   const [ModalError, setModalError] = useState(false)
 
@@ -28,7 +32,7 @@ function EmployeesList() {
     zipcode: useRef(),
   }
   const AddEmployeeForm = (e) => {
-    const employees = JSON.parse(localStorage.getItem('employees')) || []
+    e.preventDefault()
     const form = document.getElementById('form-create-employee')
     const dateStart =
       StartDATE !== ''
@@ -54,7 +58,6 @@ function EmployeesList() {
       zipcode: FormComplete.zipcode.current.value,
     }
 
-    e.preventDefault()
     if (
       newEmployee.firstname !== '' &&
       newEmployee.lastname !== '' &&
@@ -66,8 +69,7 @@ function EmployeesList() {
       newEmployee.state !== '' &&
       newEmployee.zipcode !== ''
     ) {
-      employees.push(newEmployee)
-      localStorage.setItem('employees', JSON.stringify(employees))
+      dispatch(SetEmployee(newEmployee))
       setModalIsVisible(true)
       form.reset()
     } else {

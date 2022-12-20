@@ -3,15 +3,19 @@ import { Link } from 'react-router-dom'
 import dataMocked from '../mocks/user.json'
 import { useState } from 'react'
 import React, { lazy, Suspense } from 'react'
-
+import { useSelector } from 'react-redux'
 const Loader = () => <p>Loading...</p>
 const DataTable = lazy(() => import('../components/listEmployee'))
 function CreateEmployee() {
+  const allEmployeeData = useSelector((state) => state.allEmployee)
+  console.log(allEmployeeData)
+  console.log(dataMocked)
+
   const [Employees, setEmployees] = useState('')
-  const localstorageData = JSON.parse(localStorage.getItem('employees'))
   let ListAllData = []
-  if (localstorageData) {
-    ListAllData = [...dataMocked, ...localstorageData]
+  if (allEmployeeData) {
+    ListAllData = [...dataMocked]
+    ListAllData.push(allEmployeeData)
   } else {
     ListAllData = [...dataMocked]
   }
